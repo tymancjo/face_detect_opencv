@@ -1,9 +1,11 @@
 import cv2
 import numpy as np
 import dlib
+import random
 
 cap = cv2.VideoCapture(0)
-W, H = (1280 // 2, 720 // 2)
+divider = 3
+W, H = (1280 // divider, 720 // divider)
 # W, H = (1280 , 720 )
 cap.set(3, W)
 cap.set(4, H)
@@ -43,21 +45,16 @@ while True:
 
         last[i] = ( mid_x, mid_y )
 
-        cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 1)
-
+        x_error = (W/2) - mid_x
+        y_error = mid_y - (H/2) 
+        
         if target:
+            tekst  = cv2.putText(frame, f"TARGET...{x_error}/{y_error}", (mid_x-100, mid_y - 50), cv2.FONT_HERSHEY_SIMPLEX,0.4,(0,0,255),1,cv2.LINE_AA)
             h_line = cv2.line(frame, (0,mid_y), (W, mid_y), (0,0,255), 1) 
             v_line = cv2.line(frame, (mid_x,0), (mid_x, H), (0,0,255), 1) 
+        else:
+            cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 1)
 
-
-        # landmarks = predictor(gray, face)
-        # left_point = (landmarks.part(36).x, landmarks.part(36).y)
-        # right_point = (landmarks.part(39).x, landmarks.part(39).y)
-        # center_top = midpoint(landmarks.part(37), landmarks.part(38))
-        # center_bottom = midpoint(landmarks.part(41), landmarks.part(40))
-
-        # hor_line = cv2.line(frame, left_point, right_point, (0, 255, 0), 2)
-        # ver_line = cv2.line(frame, center_top, center_bottom, (0, 255, 0), 2)
 
     upsized = cv2.resize(frame, (2*W, 2*H), interpolation = cv2.INTER_AREA)
     cv2.imshow("Frame", upsized)
